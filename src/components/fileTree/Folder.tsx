@@ -6,7 +6,7 @@ import FileComponent from "./FileComponent";
 import type { IFileTree } from "../../interfaces";
 interface IFolderProps extends IFileTree {
     activeNode: string;
-    changeActiveNodeHandler: (id:string)=> void;
+    changeActiveNodeHandler: (item:IFileTree)=> void;
 }
 
 
@@ -19,7 +19,6 @@ export default function Folder({id, isFolder, name, childern, activeNode, change
     // ** Handlers
     const toggleFolderState = ()=>{
         setIsOpen(prev => !prev);
-        changeActiveNodeHandler(id);
     }
 
 
@@ -48,14 +47,21 @@ export default function Folder({id, isFolder, name, childern, activeNode, change
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
                             </button>
                     }
-                    <button>
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>
-                    </button>
+                    {
+                        isOpen ? 
+                            <button>
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder-open"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19l2.757 -7.351a1 1 0 0 1 .936 -.649h12.307a1 1 0 0 1 .986 1.164l-.996 5.211a2 2 0 0 1 -1.964 1.625h-14.026a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v2" /></svg>
+                            </button>
+                            :
+                            <button>
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>
+                            </button>
+                    }
                     {name}
                 </div>
                 {
                     isFolder && isOpen &&
-                    <ul className="block ml-2 mt-1">
+                    <ul className="block ml-2 mt-1 border-l-2 border-[#D4D4D4]">
                         {fileTreeRender}
                     </ul>
                 }

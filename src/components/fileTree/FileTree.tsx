@@ -5,10 +5,20 @@ import FileComponent from "./FileComponent";
 import Folder from "./Folder";
 // ** Interfaces
 import { fileTreeData } from "../../data/data";
+// ** Store
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { addTab, setActiveTab } from "../../app/features/tabs/tabsSlice";
+import type { IFileTree } from "../../interfaces";
 
 
 
 export default function FileTree() {
+    // ** Store
+    const { tabs } = useAppSelector((state) => state.tabsSlice)
+    const dispatch = useAppDispatch()
+
+
+
     // ** States
     const [isOpen,setIsOpen] = useState<boolean>(true);
     const [activeNode,setActiveNode] = useState<string>('');
@@ -18,10 +28,17 @@ export default function FileTree() {
     // ** Handlers
     const toggleFolderState = ()=>{
         setIsOpen(prev => !prev);
-        changeActiveNodeHandler('main');
     }
-    const changeActiveNodeHandler = (id:string)=>{
-        setActiveNode(id);
+    const changeActiveNodeHandler = (file:IFileTree)=>{
+        setActiveNode(file.id);
+        openFileHandler(file);
+    }
+    const openFileHandler = (file:IFileTree)=>{
+        const isExited = tabs.some(item => item.id === file.id);
+        if(isExited) return
+        if(file.isFolder) return
+        dispatch(addTab(file));
+        dispatch(setActiveTab(file));
     }
 
 
@@ -40,7 +57,7 @@ export default function FileTree() {
         <>
             <div className="min-w-72 h-screen bg-[#252526] py-2">
                 <h1 className="px-4 text-[12px] text-[#D4D4D4]">EXPLORER</h1>
-                <ul className="mt-2 text-[14px]">
+                <ul className="mt-2 text-[14px] text-[#f4f4f4]">
                     <li>
                         <div className={ `${activeNode === 'main' ? 'bg-[rgba(98,157,214)]' : ''} flex justify-between items-center gap-1`} onClick={toggleFolderState}>
                             <div className="w-full flex items-center gap-1 cursor-pointer">

@@ -1,7 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { tabsSlice } from './features/tabs/tabsSlice'
 
 export const store = configureStore({
     reducer: {
+        tabsSlice: tabsSlice.reducer
     },
 })
 

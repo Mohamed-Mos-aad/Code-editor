@@ -15,7 +15,8 @@ export const fileTreeData:IFileTree[] = [
             {
                 id: uuid(),
                 isFolder: false,
-                name: "main.jsx"
+                name: "main.jsx",
+                content: ""
             }
         ]
     },
@@ -23,6 +24,7 @@ export const fileTreeData:IFileTree[] = [
         id: uuid(),
         isFolder: false,
         name: "index.html",
+        content: ""
     },
     {
         id: uuid(),
@@ -32,7 +34,8 @@ export const fileTreeData:IFileTree[] = [
             {
                 id: uuid(),
                 isFolder: false,
-                name: "style.css"
+                name: "style.css",
+                content: ""
             }
         ]
     },
@@ -40,5 +43,6 @@ export const fileTreeData:IFileTree[] = [
         id: uuid(),
         isFolder: false,
         name: "function.js",
+        content: ""
     }
 ]
