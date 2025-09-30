@@ -35,7 +35,6 @@ export default function CodePage() {
     // ** UseEffect
     useEffect(()=>{
         if(!editorRef.current) return
-        console.log(highlightSyntax(code));
         editorRef.current.innerHTML = highlightSyntax(code);
     },[code])
 

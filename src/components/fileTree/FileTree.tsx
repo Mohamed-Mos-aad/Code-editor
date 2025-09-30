@@ -1,30 +1,76 @@
+// ** Hooks && Tools
+import { useState } from "react";
+// ** Components
+import FileComponent from "./FileComponent";
+import Folder from "./Folder";
+// ** Interfaces
+import { fileTreeData } from "../../data/data";
+
+
+
 export default function FileTree() {
+    // ** States
+    const [isOpen,setIsOpen] = useState<boolean>(true);
+    const [activeNode,setActiveNode] = useState<string>('');
+
+
+
+    // ** Handlers
+    const toggleFolderState = ()=>{
+        setIsOpen(prev => !prev);
+        changeActiveNodeHandler('main');
+    }
+    const changeActiveNodeHandler = (id:string)=>{
+        setActiveNode(id);
+    }
+
+
+
+    // ** Render
+    const fileTreeRender = fileTreeData?.map(item => 
+        item.isFolder ?  
+        <Folder id={item.id} isFolder={item.isFolder} name={item.name} childern={item.childern} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
+        :
+        <FileComponent id={item.id} isFolder={item.isFolder} name={item.name} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/>
+    )
+
+
+
     return (
         <>
-            <div className="min-w-72 h-screen bg-[#252526] px-4 py-2">
-                <h1 className="text-[12px] text-[#D4D4D4]">EXPLORER</h1>
+            <div className="min-w-72 h-screen bg-[#252526] py-2">
+                <h1 className="px-4 text-[12px] text-[#D4D4D4]">EXPLORER</h1>
                 <ul className="mt-2 text-[14px]">
                     <li>
-                        <div className="flex items-center gap-1">
-                            <div className="flex items-center gap-1">
-                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 9l6 6l6 -6" /></svg>
-                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder-open"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19l2.757 -7.351a1 1 0 0 1 .936 -.649h12.307a1 1 0 0 1 .986 1.164l-.996 5.211a2 2 0 0 1 -1.964 1.625h-14.026a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v2" /></svg>
+                        <div className={ `${activeNode === 'main' ? 'bg-[rgba(98,157,214)]' : ''} flex justify-between items-center gap-1`} onClick={toggleFolderState}>
+                            <div className="w-full flex items-center gap-1 cursor-pointer">
+                                {
+                                    isOpen ? 
+                                        <button>
+                                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 9l6 6l6 -6" /></svg>
+                                        </button>
+                                        :
+                                        <button>
+                                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                                        </button>
+                                }
+                                Project Name
                             </div>
-                            app
+                            <div className="flex gap-2 pr-2">
+                                <button className="cursor-pointer">
+                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-file-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M12 11l0 6" /><path d="M9 14l6 0" /></svg>
+                                </button>
+                                <button className="cursor-pointer">
+                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-7a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v3.5" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+                                </button>
+                            </div>
                         </div>
-                        <ul className="block ml-2">
-                            <li className="flex items-center gap-1">
-                                <div className="flex items-center gap-1">
-                                    <div className="w-5"></div>
-                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-file-type-js"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M3 15h3v4.5a1.5 1.5 0 0 1 -3 0" /><path d="M9 20.25c0 .414 .336 .75 .75 .75h1.25a1 1 0 0 0 1 -1v-1a1 1 0 0 0 -1 -1h-1a1 1 0 0 1 -1 -1v-1a1 1 0 0 1 1 -1h1.25a.75 .75 0 0 1 .75 .75" /><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-1" /></svg>
-                                </div>
-                                main.js
-                            </li>
-                        </ul>
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>
-                        app
+                        {
+                            isOpen && 
+                            <ul className="block ml-2 mt-1">
+                                {fileTreeRender}
+                            </ul>
+                        }
                     </li>
                 </ul>
             </div>
