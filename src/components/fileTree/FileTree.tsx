@@ -34,11 +34,11 @@ export default function FileTree() {
         openFileHandler(file);
     }
     const openFileHandler = (file:IFileTree)=>{
-        const isExited = tabs.some(item => item.id === file.id);
-        if(isExited) return
         if(file.isFolder) return
-        dispatch(addTab(file));
+        const isExited = tabs.some(item => item.id === file.id);
         dispatch(setActiveTab(file));
+        if(isExited) return 
+        dispatch(addTab(file));
     }
 
 
@@ -46,9 +46,9 @@ export default function FileTree() {
     // ** Render
     const fileTreeRender = fileTreeData?.map(item => 
         item.isFolder ?  
-        <Folder id={item.id} isFolder={item.isFolder} name={item.name} childern={item.childern} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
+        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
         :
-        <FileComponent id={item.id} isFolder={item.isFolder} name={item.name} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/>
+        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/>
     )
 
 

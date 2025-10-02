@@ -4,16 +4,17 @@ import { useState } from "react";
 import FileComponent from "./FileComponent";
 // ** Interfaces
 import type { IFileTree } from "../../interfaces";
-interface IFolderProps extends IFileTree {
+interface IFolderProps {
     activeNode: string;
     changeActiveNodeHandler: (item:IFileTree)=> void;
+    file: IFileTree;
 }
 
 
-export default function Folder({id, isFolder, name, childern, activeNode, changeActiveNodeHandler}:IFolderProps) {
+export default function Folder({file, activeNode, changeActiveNodeHandler}:IFolderProps) {
     // ** States
     const [isOpen,setIsOpen] = useState<boolean>(false);
-
+    const { id, name, isFolder } = file;
 
 
     // ** Handlers
@@ -24,11 +25,11 @@ export default function Folder({id, isFolder, name, childern, activeNode, change
 
 
     // ** Render
-    const fileTreeRender = childern?.map(item => 
+    const fileTreeRender = file.childern?.map(item => 
         item.isFolder ?  
-        <Folder id={item.id} isFolder={item.isFolder} name={item.name} childern={item.childern} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
+        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
         :
-        <FileComponent id={item.id} isFolder={item.isFolder} name={item.name} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/>
+        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/>
     )
 
 
@@ -36,7 +37,10 @@ export default function Folder({id, isFolder, name, childern, activeNode, change
     return (
         <>
             <li className="block ml-1 mt-1 cursor-pointer">
-                <div className={ `${activeNode === id ? 'bg-[rgba(98,157,214)]' : ''} flex items-center gap-1`} onClick={toggleFolderState}>
+                <div className={ `${activeNode === id ? 'bg-[rgba(98,157,214)]' : ''} flex items-center gap-1`} onClick={() => {
+                    toggleFolderState();
+                    changeActiveNodeHandler(file);
+                }}>
                     {
                         isOpen ? 
                             <button>

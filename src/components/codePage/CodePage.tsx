@@ -1,42 +1,48 @@
 // ** Hooks && Tools
-import { useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 // ** Components
 import Tabs from "../tabs/Tabs";
+// ** Store
+import { useAppSelector } from "../../app/hooks";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
 
 export default function CodePage() {
+    // ** Store
+    const { activeTab } = useAppSelector((state) => state.tabsSlice)
+    
+
+
     // ** States
-    const [code, setCode] = useState("");
+    const [code, setCode] = useState(activeTab?.content || "");
 
 
 
     // ** Ref
-    const editorRef = useRef<HTMLDivElement>(null);
+    const codeRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    
 
 
 
     // ** Handlers
-    const getLinesNumbers = ()=>{
-        const lines = code.split("\n");
-        return lines.map((_, index) => (
-            <li key={index} className="w-16 flex justify-center line-number">{index + 1}</li>
-        ));
+    const changeCodeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>)=>{
+        setCode(e.currentTarget.value);
     }
-    const highlightSyntax = (code:string) => {
-        const keywords = /\b(function|var|let|const|if|else|return)\b/g;
-        return code.replace(keywords, (match) => `<span class="text-blue-500!">${match}</span>`);
+    const handleScroll = () => {
+        if(codeRef.current && textareaRef.current) {
+            textareaRef.current.scrollTop = codeRef.current.scrollTop;
+        }
     };
-    const handleChange = () => {
-        if(!editorRef.current) return
-        setCode(editorRef.current.innerText);
-    };
-
 
 
     // ** UseEffect
-    useEffect(()=>{
-        if(!editorRef.current) return
-        editorRef.current.innerHTML = highlightSyntax(code);
-    },[code])
+    useEffect(() => {
+        if (activeTab) {
+            setCode(activeTab.content || "");
+        }
+    }, [activeTab]);
 
 
 
@@ -44,15 +50,27 @@ export default function CodePage() {
         <>
             <div className="w-full">
                 <Tabs />
-                <section className="flex bg-[#1E1E1E]">
-                    <div>
-                        <ul className="text-white">
-                            {getLinesNumbers()}
-                        </ul>
-                    </div>
-                    <div ref={editorRef}className="w-full font-mono focus:outline-0" style={{ whiteSpace: "pre-wrap" }}  onInput={handleChange} contentEditable spellCheck="false">
-                        
-                    </div>
+                <section className="relative bg-[#1E1E1E]" ref={codeRef} onScroll={handleScroll}>
+                    <textarea className="w-full h-full absolute top-0 left-0 text-red-500 caret-white resize-none"
+                    style={{
+    fontFamily: "'Fira Code', monospace",
+    fontSize: '14px',
+    fontWeight: 400,
+    lineHeight: '24px',
+  }}
+   onChange={(e)=>{changeCodeHandler(e)}} value={code || ""}>
+
+                    </textarea>
+                    <SyntaxHighlighter language="javascript" style={nightOwl} customStyle={{backgroundColor: '#1E1E1E', height: '95vh', overflow: 'auto',
+    fontFamily: "'Fira Code', monospace",
+    fontSize: '14px',
+    fontWeight: 400,
+    lineHeight: '24px',
+    padding: '8px',
+    fontStyle: 'normal',
+}} showLineNumbers>
+                        {code || ""}
+                    </SyntaxHighlighter>
                 </section>
             </div>
         </>
