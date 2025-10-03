@@ -1,11 +1,18 @@
 // ** Hooks && Tools
 import {  useEffect, useRef, useState } from "react";
+import Prism from "prismjs";
+import "prism-themes/themes/prism-vsc-dark-plus.css";
+async function loadLanguage(lang: string) {
+    try {
+        await import(`prismjs/components/prism-${lang}`);
+    } catch (e) {
+        console.warn(`Language ${e} not found, fallback to javascript`);
+    }
+}
 // ** Components
 import Tabs from "../tabs/Tabs";
 // ** Store
 import { useAppSelector } from "../../app/hooks";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 
 export default function CodePage() {
@@ -16,11 +23,11 @@ export default function CodePage() {
 
     // ** States
     const [code, setCode] = useState(activeTab?.content || "");
-
+    const [highlightedCode, setHighlightedCode] = useState("");
 
 
     // ** Ref
-    const codeRef = useRef<HTMLDivElement>(null);
+    const preRef = useRef<HTMLPreElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     
 
@@ -28,20 +35,37 @@ export default function CodePage() {
 
     // ** Handlers
     const changeCodeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>)=>{
-        setCode(e.currentTarget.value);
+        const newCode = e.currentTarget.value;
+        setCode(newCode);
+        const lang = "html";
+        const html = Prism.highlight(
+            newCode,
+            Prism.languages[lang] || Prism.languages.javascript,
+            lang
+        );
+        setHighlightedCode(html);
     }
     const handleScroll = () => {
-        if(codeRef.current && textareaRef.current) {
-            textareaRef.current.scrollTop = codeRef.current.scrollTop;
+        if (textareaRef.current && preRef.current) {
+        preRef.current.scrollTop = textareaRef.current.scrollTop;
+        preRef.current.scrollLeft = textareaRef.current.scrollLeft;
         }
     };
 
 
     // ** UseEffect
     useEffect(() => {
-        if (activeTab) {
-            setCode(activeTab.content || "");
-        }
+    if (activeTab) {
+        const lang = "html";
+
+        loadLanguage(lang).then(() => {
+            const newCode = activeTab.content || "";
+            setCode(newCode);
+            setHighlightedCode(
+                Prism.highlight(newCode, Prism.languages[lang] || Prism.languages.javascript, lang)
+            );
+        });
+    }
     }, [activeTab]);
 
 
@@ -50,27 +74,16 @@ export default function CodePage() {
         <>
             <div className="w-full">
                 <Tabs />
-                <section className="relative bg-[#1E1E1E]" ref={codeRef} onScroll={handleScroll}>
-                    <textarea className="w-full h-full absolute top-0 left-0 text-red-500 caret-white resize-none"
-                    style={{
-    fontFamily: "'Fira Code', monospace",
-    fontSize: '14px',
-    fontWeight: 400,
-    lineHeight: '24px',
-  }}
-   onChange={(e)=>{changeCodeHandler(e)}} value={code || ""}>
-
+                <section className="relative bg-[#1E1E1E]">
+                    <textarea ref={textareaRef}
+                            onScroll={handleScroll}
+                            className="w-full h-[95vh] absolute top-0 left-0 text-transparent caret-white resize-none focus:outline-0 selection:bg-blue-600 selection:text-white
+                            bg-transparent outline-none z-10 font-mono text-[16px] leading-6" 
+                            spellCheck={false}
+                            onChange={(e)=>{changeCodeHandler(e)}} 
+                            value={code || ""}>
                     </textarea>
-                    <SyntaxHighlighter language="javascript" style={nightOwl} customStyle={{backgroundColor: '#1E1E1E', height: '95vh', overflow: 'auto',
-    fontFamily: "'Fira Code', monospace",
-    fontSize: '14px',
-    fontWeight: 400,
-    lineHeight: '24px',
-    padding: '8px',
-    fontStyle: 'normal',
-}} showLineNumbers>
-                        {code || ""}
-                    </SyntaxHighlighter>
+                    <pre ref={preRef} className="w-full h-[95vh] overflow-auto text-[16px] leading-6 font-mono text-white whitespace-pre-wrap break-words" dangerouslySetInnerHTML={{ __html: highlightedCode }}/>
                 </section>
             </div>
         </>
