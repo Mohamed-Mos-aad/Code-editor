@@ -66,7 +66,7 @@ export default function ContextMenu() {
 
     return (
         <>
-            <div ref={menuRef} className="w-72 absolute bg-[#252526] border-1 border-[#5b5b5b] rounded-[2px] text-[14px]" style={{ top: y, left: x }}>
+            <div ref={menuRef} className="w-72 absolute z-50 bg-[#252526] border-1 border-[#5b5b5b] rounded-[2px] text-[14px]" style={{ top: y, left: x }}>
                 <ul className="p-1">
                     {
                         file?.isFolder && 

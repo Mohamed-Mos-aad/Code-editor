@@ -88,13 +88,13 @@ export default function CodePage() {
                 <section className="relative bg-[#1E1E1E]">
                     <textarea ref={textareaRef}
                             onScroll={handleScroll}
-                            className="w-full h-[95vh] absolute top-0 left-0 text-transparent caret-white resize-none focus:outline-0 selection:bg-blue-600 selection:text-white
-                            bg-transparent outline-none z-10 font-mono text-[16px] leading-6" 
+                            className="w-full h-[95vh] absolute top-0 left-0 text-transparent caret-white whitespace-pre resize-none focus:outline-0 selection:bg-blue-600 selection:text-white
+                            bg-transparent outline-none z-10 font-mono text-[16px] leading-6 overflow-x-auto custom-scrollbar" 
                             spellCheck={false}
                             onChange={(e)=>{changeCodeHandler(e)}} 
                             value={code || ""}>
                     </textarea>
-                    <pre ref={preRef} className="w-full h-[95vh] overflow-auto text-[16px] leading-6 font-mono text-white whitespace-pre-wrap break-words" dangerouslySetInnerHTML={{ __html: highlightedCode }}/>
+                    <pre ref={preRef} className="w-full h-[95vh] overflow-auto text-[16px] leading-6 font-mono text-white whitespace-pre overflow-x-auto custom-scrollbar" dangerouslySetInnerHTML={{ __html: highlightedCode }}/>
                 </section>
             </div>
         </>

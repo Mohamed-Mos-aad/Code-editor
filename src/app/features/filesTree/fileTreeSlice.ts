@@ -7,7 +7,7 @@ import { fileTreeData } from '../../../data/data';
 import type { IFileTree } from '../../../interfaces';
 
 interface FileTreeState {
-    tree: IFileTree[];
+    tree: IFileTree;
     newNode: {parentId: string, isFolder: boolean, rename?: boolean} | null;
 }
 
@@ -36,7 +36,9 @@ export const fileTreeSlice = createSlice({
                 return null;
             }
 
-            const parent = findNode(state.tree);
+            const parent = action.payload.parentId === state.tree.id 
+            ? state.tree 
+            : findNode(state.tree.children ?? []);
             if (parent && parent.isFolder) {
                 parent.children = parent.children || [];
                 parent.children.push({ id, name, isFolder: false });
@@ -57,7 +59,9 @@ export const fileTreeSlice = createSlice({
                 return null;
             }
 
-            const parent = findNode(state.tree);
+            const parent = action.payload.parentId === state.tree.id 
+            ? state.tree 
+            : findNode(state.tree.children ?? []);
             if (parent && parent.isFolder) {
                 parent.children = parent.children || [];
                 parent.children.push({ id, name, isFolder: true, children: [] });
@@ -76,11 +80,11 @@ export const fileTreeSlice = createSlice({
                 return null;
             }
 
-            const node = findNode(state.tree);
-            if (node) {
+            const node = findNode(state.tree.children ?? []);
+            if (node && action.payload.newName !== '') {
                 node.name = action.payload.newName;
             }
-            if (node) node.name = action.payload.newName;
+            if (node && action.payload.newName !== '') node.name = action.payload.newName;
         },
         deleteNode: (state, action: PayloadAction<{ id: string }>) => {
             const deleteRecursively = (nodes: IFileTree[]): IFileTree[] => {
@@ -89,7 +93,7 @@ export const fileTreeSlice = createSlice({
                 children: n.children ? deleteRecursively(n.children) : []
                 }));
             }
-            state.tree = deleteRecursively(state.tree);
+            state.tree.children  = deleteRecursively(state.tree.children ?? []);
         },
         setNewNode: (state, action: PayloadAction<{parentId: string, isFolder: boolean, rename: boolean} | null>)=> {
             state.newNode = action.payload;

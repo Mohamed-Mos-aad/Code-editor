@@ -1,9 +1,13 @@
 // ** Hooks && Tools
+import { useEffect } from "react";
+// ** Components
+import FileLogo from "../fileTree/FileLogo";
+// ** Interfaces
+import type { IFileTree } from "../../interfaces";
 // ** Store
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { closeTab, setActiveTab } from "../../app/features/tabs/tabsSlice";
-import type { IFileTree } from "../../interfaces";
-import { useEffect } from "react";
+
 
 
 
@@ -27,6 +31,9 @@ export default function Tabs() {
     // ** Render
     const tabRenders = tabs.map(tab => 
         <li className={`w-40 flex justify-between items-center ${activeTab?.id === tab.id ? 'bg-[#1E1E1E]' :  'bg-[#2D2D2D]'}  px-4 py-2 cursor-pointer`} onClick={()=>{selectActiveTabHandler(tab)}} key={tab.id}>
+            <div className="max-w-4">
+                <FileLogo isFolder={false} name={tab.name}/>
+            </div>
             {tab.name}
             {   
                 

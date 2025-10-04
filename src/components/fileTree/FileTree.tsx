@@ -3,13 +3,16 @@ import { useState } from "react";
 // ** Components
 import FileComponent from "./FileComponent";
 import Folder from "./Folder";
+import RenameNode from "./RenameNode";
+import NewNode from "./NewNode";
 // ** Interfaces
 import type { IFileTree } from "../../interfaces";
 // ** Store
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addTab, setActiveTab } from "../../app/features/tabs/tabsSlice";
-import { updateContextMenu } from "../../app/features/contextMenu/contextMenuSlice";
-import RenameNode from "./RenameNode";
+import { closeContextMenu, updateContextMenu } from "../../app/features/contextMenu/contextMenuSlice";
+import { setNewNode } from "../../app/features/filesTree/fileTreeSlice";
+
 
 
 
@@ -48,11 +51,18 @@ export default function FileTree() {
         dispatch(updateContextMenu({ visible: true, x: e.pageX, y: e.pageY, file }));
         setActiveNode(file.id);
     };
-
+    const addFileHandler = ()=>{
+        dispatch(closeContextMenu());
+        dispatch(setNewNode({ parentId: 'main', isFolder: false, rename: false }));
+    }
+    const addFolderHandler = ()=>{
+        dispatch(closeContextMenu());
+        dispatch(setNewNode({ parentId: 'main', isFolder: true, rename: false }));
+    }
 
 
     // ** Render
-    const fileTreeRender = tree?.map(node => {
+    const fileTreeRender = tree?.children?.map(node => {
         const isNodeRenaming = newNode?.rename && newNode?.parentId === node.id;
 
         return node.isFolder
@@ -70,8 +80,8 @@ export default function FileTree() {
     return (
         <>
             <div className="min-w-72 h-screen bg-[#252526] py-2">
-                <h1 className="px-4 text-[12px] text-[#D4D4D4]">EXPLORER</h1>
-                <ul className="mt-2 text-[14px] text-[#f4f4f4]">
+                <h1 className="px-4 text-[11px] text-[#D4D4D4]">EXPLORER</h1>
+                <ul className="mt-2 text-[13px] text-[#f4f4f4]">
                     <li>
                         <div className={ `${activeNode === 'main' ? 'bg-[rgba(98,157,214)]/30' : ''} flex justify-between items-center gap-1`} onClick={toggleFolderState}>
                             <div className="w-full flex items-center gap-1 cursor-pointer">
@@ -85,13 +95,19 @@ export default function FileTree() {
                                             <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
                                         </button>
                                 }
-                                Project Name
+                                {tree.name}
                             </div>
                             <div className="flex gap-2 pr-2">
-                                <button className="cursor-pointer">
+                                <button className="cursor-pointer" onClick={(e)=>{
+                                    e.stopPropagation();
+                                    addFileHandler()}
+                                }>
                                     <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-file-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M12 11l0 6" /><path d="M9 14l6 0" /></svg>
                                 </button>
-                                <button className="cursor-pointer">
+                                <button className="cursor-pointer" onClick={(e)=>{
+                                    e.stopPropagation();
+                                    addFolderHandler()}
+                                }>
                                     <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 19h-7a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v3.5" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
                                 </button>
                             </div>
@@ -100,6 +116,7 @@ export default function FileTree() {
                             isOpen && 
                             <ul className="block ml-2 mt-1">
                                 {fileTreeRender}
+                                {newNode && newNode.parentId === 'main' && <NewNode id={newNode.parentId} isFolder={newNode.isFolder} changeActiveNodeHandler={changeActiveNodeHandler}/>}
                             </ul>
                         }
                     </li>
