@@ -1,10 +1,13 @@
 // ** Hooks && Tools
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // ** Components
 import FileComponent from "./FileComponent";
 import FileLogo from "./FileLogo";
 // ** Interfaces
 import type { IFileTree } from "../../interfaces";
+import { useAppSelector } from "../../app/hooks";
+import NewNode from "./NewNode";
+import RenameNode from "./RenameNode";
 interface IFolderProps {
     activeNode: string;
     changeActiveNodeHandler: (item:IFileTree)=> void;
@@ -14,9 +17,15 @@ interface IFolderProps {
 
 
 export default function Folder({file, activeNode, changeActiveNodeHandler, onRightClick}:IFolderProps) {
+    // ** Store
+    const { newNode } = useAppSelector((state) => state.fileTreeSlice)
+
+
+
     // ** States
     const [isOpen,setIsOpen] = useState<boolean>(false);
     const { id, name, isFolder } = file;
+
 
 
     // ** Handlers
@@ -27,15 +36,28 @@ export default function Folder({file, activeNode, changeActiveNodeHandler, onRig
 
 
     // ** Render
-    const fileTreeRender = file.children?.map(item => 
-        item.isFolder ?  
-        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={onRightClick}/> 
-        :
-        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={onRightClick}/> 
-    )
+    const fileTreeRender = file.children?.map(node => {
+        const isNodeRenaming = newNode?.rename && newNode?.parentId === node.id;
+
+        return node.isFolder
+            ? (isNodeRenaming
+                ? <RenameNode node={node} changeActiveNodeHandler={changeActiveNodeHandler} />
+                : <Folder file={node} key={node.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={onRightClick} />)
+            : (isNodeRenaming
+                ? <RenameNode node={node} changeActiveNodeHandler={changeActiveNodeHandler} />
+                : <FileComponent file={node} key={node.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={onRightClick} />);
+    });
 
 
+    // ** UseEffect
+    useEffect(()=>{
+        if (newNode && newNode.parentId === id) {
+            setIsOpen(true);
+        }
+    },[newNode,id])
 
+
+    
     return (
         <>
             <li className="block ml-1 mt-1 cursor-pointer">
@@ -63,6 +85,7 @@ export default function Folder({file, activeNode, changeActiveNodeHandler, onRig
                     isFolder && isOpen &&
                     <ul className="block ml-2 mt-1 border-l-2 border-[#D4D4D4]">
                         {fileTreeRender}
+                        {newNode && newNode.parentId === id && <NewNode id={newNode.parentId} isFolder={newNode.isFolder} changeActiveNodeHandler={changeActiveNodeHandler}/>}
                     </ul>
                 }
             </li>

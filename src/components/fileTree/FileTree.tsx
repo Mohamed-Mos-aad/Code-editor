@@ -4,18 +4,20 @@ import { useState } from "react";
 import FileComponent from "./FileComponent";
 import Folder from "./Folder";
 // ** Interfaces
-import { fileTreeData } from "../../data/data";
 import type { IFileTree } from "../../interfaces";
 // ** Store
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addTab, setActiveTab } from "../../app/features/tabs/tabsSlice";
 import { updateContextMenu } from "../../app/features/contextMenu/contextMenuSlice";
+import RenameNode from "./RenameNode";
 
 
 
 export default function FileTree() {
     // ** Store
     const { tabs } = useAppSelector((state) => state.tabsSlice)
+    const { tree } = useAppSelector((state) => state.fileTreeSlice)
+    const { newNode } = useAppSelector((state) => state.fileTreeSlice)
     const dispatch = useAppDispatch()
 
 
@@ -44,19 +46,23 @@ export default function FileTree() {
     const rightClickHandler = (e: React.MouseEvent, file: IFileTree) => {
         e.preventDefault();
         dispatch(updateContextMenu({ visible: true, x: e.pageX, y: e.pageY, file }));
-        console.log(e.pageX, e.pageY)
         setActiveNode(file.id);
     };
 
 
 
     // ** Render
-    const fileTreeRender = fileTreeData?.map(item => 
-        item.isFolder ?  
-        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler}/> 
-        :
-        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler}/> 
-    )
+    const fileTreeRender = tree?.map(node => {
+        const isNodeRenaming = newNode?.rename && newNode?.parentId === node.id;
+
+        return node.isFolder
+            ? (isNodeRenaming
+                ? <RenameNode node={node} changeActiveNodeHandler={changeActiveNodeHandler} />
+                : <Folder file={node} key={node.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler} />)
+            : (isNodeRenaming
+                ? <RenameNode node={node} changeActiveNodeHandler={changeActiveNodeHandler} />
+                : <FileComponent file={node} key={node.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler} />);
+    });
 
 
 

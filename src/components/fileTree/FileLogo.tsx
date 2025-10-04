@@ -37,7 +37,7 @@ export default function FileLogo({isFolder,isOpen,name}:IFileLogo) {
 
     return (
         <>
-            <img src={logoIconUrl} alt={name} className="w-4"/>
+            <img src={logoIconUrl} alt={name} className="min-w-4"/>
         </>
     )
 }

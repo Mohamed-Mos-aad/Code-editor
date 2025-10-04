@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 // ** Slices
 import { tabsSlice } from './features/tabs/tabsSlice'
 import { contextMenuSlice } from './features/contextMenu/contextMenuSlice'
+import { fileTreeSlice } from './features/filesTree/fileTreeSlice'
 
 
 
@@ -10,6 +11,7 @@ export const store = configureStore({
     reducer: {
         tabsSlice: tabsSlice.reducer,
         contextMenuSlice: contextMenuSlice.reducer,
+        fileTreeSlice: fileTreeSlice.reducer,
     },
 })
 
