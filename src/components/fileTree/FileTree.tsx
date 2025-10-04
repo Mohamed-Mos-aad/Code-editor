@@ -59,7 +59,7 @@ export default function FileTree() {
                 <h1 className="px-4 text-[12px] text-[#D4D4D4]">EXPLORER</h1>
                 <ul className="mt-2 text-[14px] text-[#f4f4f4]">
                     <li>
-                        <div className={ `${activeNode === 'main' ? 'bg-[rgba(98,157,214)]' : ''} flex justify-between items-center gap-1`} onClick={toggleFolderState}>
+                        <div className={ `${activeNode === 'main' ? 'bg-[rgba(98,157,214)]/30' : ''} flex justify-between items-center gap-1`} onClick={toggleFolderState}>
                             <div className="w-full flex items-center gap-1 cursor-pointer">
                                 {
                                     isOpen ? 

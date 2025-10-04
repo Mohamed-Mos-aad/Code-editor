@@ -12,7 +12,7 @@ export default function Tabs() {
     const { tabs, activeTab } = useAppSelector((state) => state.tabsSlice)
     const dispatch = useAppDispatch()
 
-
+    
     
     // ** Handlers
     const selectActiveTabHandler = (file:IFileTree)=>{

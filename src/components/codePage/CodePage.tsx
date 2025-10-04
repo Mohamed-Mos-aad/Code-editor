@@ -1,18 +1,20 @@
 // ** Hooks && Tools
 import {  useEffect, useRef, useState } from "react";
 import Prism from "prismjs";
-import "prism-themes/themes/prism-vsc-dark-plus.css";
-async function loadLanguage(lang: string) {
-    try {
-        await import(`prismjs/components/prism-${lang}`);
-    } catch (e) {
-        console.warn(`Language ${e} not found, fallback to javascript`);
-    }
+import "prism-themes/themes/prism-one-dark.css";
+import "prismjs/components/";
+function loadLanguage(name: string) {
+    const fileName = name;
+    const parts = fileName?.split(".");
+    const extension = parts[parts.length - 1].toLocaleLowerCase();
+    const lang = languagesMap[extension].toLowerCase();
+    return lang;
 }
 // ** Components
 import Tabs from "../tabs/Tabs";
 // ** Store
 import { useAppSelector } from "../../app/hooks";
+import { languagesMap } from "../../constant";
 
 
 export default function CodePage() {
@@ -24,6 +26,9 @@ export default function CodePage() {
     // ** States
     const [code, setCode] = useState(activeTab?.content || "");
     const [highlightedCode, setHighlightedCode] = useState("");
+    
+
+
 
 
     // ** Ref
@@ -37,10 +42,11 @@ export default function CodePage() {
     const changeCodeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>)=>{
         const newCode = e.currentTarget.value;
         setCode(newCode);
-        const lang = "html";
+        const lang = loadLanguage(activeTab?.name || "");
+        const grammar = Prism.languages[lang] || Prism.languages.javascript;
         const html = Prism.highlight(
             newCode,
-            Prism.languages[lang] || Prism.languages.javascript,
+            grammar,
             lang
         );
         setHighlightedCode(html);
@@ -56,15 +62,11 @@ export default function CodePage() {
     // ** UseEffect
     useEffect(() => {
     if (activeTab) {
-        const lang = "html";
-
-        loadLanguage(lang).then(() => {
-            const newCode = activeTab.content || "";
-            setCode(newCode);
-            setHighlightedCode(
-                Prism.highlight(newCode, Prism.languages[lang] || Prism.languages.javascript, lang)
-            );
-        });
+        const lang = loadLanguage(activeTab?.name || "");
+        const newCode = activeTab.content || "";
+        const grammar = Prism.languages[lang] || Prism.languages.javascript;
+        setCode(newCode);
+        setHighlightedCode(Prism.highlight(newCode, grammar, lang));
     }
     }, [activeTab]);
 

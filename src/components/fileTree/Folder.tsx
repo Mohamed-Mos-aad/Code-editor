@@ -2,6 +2,7 @@
 import { useState } from "react";
 // ** Components
 import FileComponent from "./FileComponent";
+import FileLogo from "./FileLogo";
 // ** Interfaces
 import type { IFileTree } from "../../interfaces";
 interface IFolderProps {
@@ -25,7 +26,7 @@ export default function Folder({file, activeNode, changeActiveNodeHandler}:IFold
 
 
     // ** Render
-    const fileTreeRender = file.childern?.map(item => 
+    const fileTreeRender = file.children?.map(item => 
         item.isFolder ?  
         <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
         :
@@ -37,7 +38,7 @@ export default function Folder({file, activeNode, changeActiveNodeHandler}:IFold
     return (
         <>
             <li className="block ml-1 mt-1 cursor-pointer">
-                <div className={ `${activeNode === id ? 'bg-[rgba(98,157,214)]' : ''} flex items-center gap-1`} onClick={() => {
+                <div className={ `${activeNode === id ? 'bg-[rgba(18,58,94)]' : ''} flex items-center gap-1 border-1 ${activeNode === id ? 'border-[#2E81D4]' : 'border-transparent'} rounded-[2px]`} onClick={() => {
                     toggleFolderState();
                     changeActiveNodeHandler(file);
                 }}>
@@ -51,16 +52,9 @@ export default function Folder({file, activeNode, changeActiveNodeHandler}:IFold
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#D4D4D4"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
                             </button>
                     }
-                    {
-                        isOpen ? 
-                            <button>
-                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder-open"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19l2.757 -7.351a1 1 0 0 1 .936 -.649h12.307a1 1 0 0 1 .986 1.164l-.996 5.211a2 2 0 0 1 -1.964 1.625h-14.026a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v2" /></svg>
-                            </button>
-                            :
-                            <button>
-                                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>
-                            </button>
-                    }
+                    <button>
+                        <FileLogo isFolder={isFolder} name={name} isOpen={isOpen}/>
+                    </button>
                     {name}
                 </div>
                 {

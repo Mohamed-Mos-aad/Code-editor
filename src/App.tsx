@@ -20,7 +20,7 @@ function App() {
 
   // ** States
   const [fileTreeIsOpen,setFileTreeIsOpen] = useState<boolean>(true);
-
+  const [sizes, setSizes] = useState([20, 80]);
 
 
   // ** Handler
@@ -34,12 +34,14 @@ function App() {
     <>
       <main className="w-full h-screen flex bg-[#1E1E1E] text-white">
         <SideBar fileStateToggleHandler={fileStateToggleHandler}/>
-        <PanelGroup direction="horizontal">
-          <Panel defaultSize={20} minSize={20}>
-          { fileTreeIsOpen && <FileTree /> }
-          </Panel>
+        <PanelGroup direction="horizontal" onLayout={setSizes}>
+          { fileTreeIsOpen &&  
+            <Panel defaultSize={sizes[0]} minSize={20}>
+              <FileTree />
+            </Panel>          
+          }
           <PanelResizeHandle />
-          <Panel defaultSize={80} minSize={30}>
+          <Panel defaultSize={fileTreeIsOpen ? sizes[1] : 100} minSize={30}>
           {activeTab ? 
             <CodePage />
             :
