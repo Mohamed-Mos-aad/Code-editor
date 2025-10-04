@@ -34,17 +34,15 @@ export default function Tabs() {
             <div className="max-w-4">
                 <FileLogo isFolder={false} name={tab.name}/>
             </div>
-            {tab.name}
-            {   
-                
-                activeTab === tab && 
+            <div className="flex items-center gap-2">
+                {tab.name}
                 <button onClick={(e)=>{
                     e.stopPropagation();
                     closeTabHandler(tab.id)
                 }}>
                     <svg  xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="white"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-x cursor-pointer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
-            }
+            </div>
         </li>
     )
 

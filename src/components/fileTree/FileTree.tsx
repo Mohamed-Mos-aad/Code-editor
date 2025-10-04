@@ -79,7 +79,7 @@ export default function FileTree() {
 
     return (
         <>
-            <div className="min-w-72 h-screen bg-[#252526] py-2">
+            <div className="min-w-72 h-full bg-[#252526] py-2">
                 <h1 className="px-4 text-[11px] text-[#D4D4D4]">EXPLORER</h1>
                 <ul className="mt-2 text-[13px] text-[#f4f4f4]">
                     <li>

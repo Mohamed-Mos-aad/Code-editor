@@ -34,28 +34,33 @@ function App() {
   
   return (
     <>
-      <main className="w-full h-screen flex bg-[#1E1E1E] text-white">
-        {
+      <main className="w-full h-screen flex flex-col bg-[#1E1E1E] text-white">
+        <div className='w-full flex-1 flex'>
+          {
             visible && <ContextMenu />
-        }
-        <SideBar fileStateToggleHandler={fileStateToggleHandler}/>
-        <PanelGroup direction="horizontal" onLayout={setSizes}>
-          { fileTreeIsOpen &&  
-            <Panel defaultSize={sizes[0]} minSize={20}>
-              <FileTree />
-            </Panel>          
           }
-          <PanelResizeHandle />
-          <Panel defaultSize={fileTreeIsOpen ? sizes[1] : 100} minSize={30}>
-          {activeTab ? 
-            <CodePage />
-            :
-            <div className='w-full h-full flex justify-center items-center text-[128px] text-[#252526]'>
-              Coding
-            </div>
-          }  
-          </Panel>
-        </PanelGroup>
+          <SideBar fileStateToggleHandler={fileStateToggleHandler}/>
+          <PanelGroup direction="horizontal" onLayout={setSizes} className="h-full">
+            { fileTreeIsOpen &&  
+              <Panel defaultSize={sizes[0]} minSize={20}>
+                <FileTree />
+              </Panel>          
+            }
+            <PanelResizeHandle />
+            <Panel defaultSize={fileTreeIsOpen ? sizes[1] : 100} minSize={30}>
+            {activeTab ? 
+              <CodePage />
+              :
+              <div className='w-full h-full flex justify-center items-center text-[128px] text-[#252526]'>
+                Coding
+              </div>
+            }  
+            </Panel>
+          </PanelGroup>
+        </div>
+        <div className='h-6 flex items-center bg-[#2C7CCC] text-[14px] px-2'>
+          saved
+        </div>
       </main>
     </>
   )

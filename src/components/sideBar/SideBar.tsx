@@ -8,7 +8,7 @@ interface ISideBar{
 export default function SideBar({fileStateToggleHandler}:ISideBar) {
     return (
         <>
-            <nav className="min-w-12 h-screen flex flex-col justify-between items-center bg-[#333333] py-4">
+            <nav className="min-w-12 h-full flex flex-col justify-between items-center bg-[#333333] py-4">
                 <ul className="flex flex-col items-center gap-6">
                     <li className="cursor-pointer" onClick={fileStateToggleHandler}>
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="28"  height="28"  viewBox="0 0 24 24"  fill="none"  stroke="#ffffff"  strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-files"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 3v4a1 1 0 0 0 1 1h4" /><path d="M18 17h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h4l5 5v7a2 2 0 0 1 -2 2z" /><path d="M16 17v2a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h2" /></svg>

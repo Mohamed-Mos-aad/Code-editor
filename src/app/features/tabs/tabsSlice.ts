@@ -11,10 +11,32 @@ interface TabsState {
 
 
 
+const storedActiveTab = localStorage.getItem('activeTab');
+const storedTabs = localStorage.getItem('tabs');
 const initialState: TabsState = {
-    tabs: [],
-    activeTab: null,
-}
+    activeTab: storedActiveTab ? JSON.parse(storedActiveTab) : null,
+    tabs: storedTabs ? JSON.parse(storedTabs) : [],
+};
+
+
+
+
+// ** Handlers
+const saveActiveTabToLocalStorageHandler = (activeTab: IFileTree | null) => {
+    try {
+        if(activeTab) localStorage.setItem('activeTab', JSON.stringify(activeTab));
+    } catch (error) {
+        console.error('Failed to save activeTab to localStorage', error);
+    }
+};
+const saveTabsToLocalStorageHandler = (tabs: IFileTree[] | null) => {
+    try {
+        if(tabs) localStorage.setItem('tabs', JSON.stringify(tabs));
+    } catch (error) {
+        console.error('Failed to save activeTab to localStorage', error);
+    }
+};
+
 
 export const tabsSlice = createSlice({
     name: 'tabsSlice',
@@ -22,10 +44,15 @@ export const tabsSlice = createSlice({
     initialState,
     reducers: {
         addTab: (state, action: PayloadAction<IFileTree>) => {
-            state.tabs.push(action.payload)
+            const exists = state.tabs.find(t => t.id === action.payload.id);
+            if (!exists) {
+                state.tabs.push(action.payload);
+                saveTabsToLocalStorageHandler(state.tabs);
+            }
         },
         setActiveTab: (state, action: PayloadAction<IFileTree | null>) => {
             state.activeTab = action.payload;
+            saveActiveTabToLocalStorageHandler(action.payload);
         },
         closeTab: (state, action: PayloadAction<string>) => {
             const closingId = action.payload;
@@ -41,6 +68,8 @@ export const tabsSlice = createSlice({
             };
 
             state.tabs = updatedTabs;
+            saveTabsToLocalStorageHandler(state.tabs);
+            saveActiveTabToLocalStorageHandler(state.activeTab);
         },
     },
 })

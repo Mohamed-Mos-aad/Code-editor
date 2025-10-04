@@ -6,15 +6,18 @@ import "prismjs/components/";
 // ** Components
 import Tabs from "../tabs/Tabs";
 // ** Store
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 // ** Data
 import { languagesMap } from "../../constant";
+import { updateFileContent } from "../../app/features/filesTree/fileTreeSlice";
+import { setActiveTab } from "../../app/features/tabs/tabsSlice";
 
 
 
 export default function CodePage() {
     // ** Store
     const { activeTab } = useAppSelector((state) => state.tabsSlice)
+    const dispatch = useAppDispatch()
     
 
 
@@ -50,6 +53,10 @@ export default function CodePage() {
     const changeCodeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>)=>{
         const newCode = e.currentTarget.value;
         setCode(newCode);
+        if (activeTab) {
+            dispatch(updateFileContent({ id: activeTab.id, content: newCode }));
+            dispatch(setActiveTab({ ...activeTab, content: newCode }));
+        }
         const lang = loadLanguageHandler(activeTab?.name || "");
         const grammar = Prism.languages[lang] || Prism.languages.javascript;
         const html = Prism.highlight(
@@ -88,13 +95,13 @@ export default function CodePage() {
                 <section className="relative bg-[#1E1E1E]">
                     <textarea ref={textareaRef}
                             onScroll={handleScroll}
-                            className="w-full h-[95vh] absolute top-0 left-0 text-transparent caret-white whitespace-pre resize-none focus:outline-0 selection:bg-blue-600 selection:text-white
+                            className="w-full h-[92vh] absolute top-0 left-0 text-transparent caret-white whitespace-pre resize-none focus:outline-0 selection:bg-blue-600 selection:text-white
                             bg-transparent outline-none z-10 font-mono text-[16px] leading-6 overflow-x-auto custom-scrollbar" 
                             spellCheck={false}
                             onChange={(e)=>{changeCodeHandler(e)}} 
                             value={code || ""}>
                     </textarea>
-                    <pre ref={preRef} className="w-full h-[95vh] overflow-auto text-[16px] leading-6 font-mono text-white whitespace-pre overflow-x-auto custom-scrollbar" dangerouslySetInnerHTML={{ __html: highlightedCode }}/>
+                    <pre ref={preRef} className="w-full h-[92vh] overflow-auto text-[16px] leading-6 font-mono text-white whitespace-pre overflow-x-auto custom-scrollbar" dangerouslySetInnerHTML={{ __html: highlightedCode }}/>
                 </section>
             </div>
         </>

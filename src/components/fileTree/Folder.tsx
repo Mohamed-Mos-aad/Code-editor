@@ -39,6 +39,8 @@ export default function Folder({file, activeNode, changeActiveNodeHandler, onRig
     const fileTreeRender = file.children?.map(node => {
         const isNodeRenaming = newNode?.rename && newNode?.parentId === node.id;
 
+
+
         return node.isFolder
             ? (isNodeRenaming
                 ? <RenameNode node={node} changeActiveNodeHandler={changeActiveNodeHandler} />

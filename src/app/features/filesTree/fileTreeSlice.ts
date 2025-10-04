@@ -11,9 +11,25 @@ interface FileTreeState {
     newNode: {parentId: string, isFolder: boolean, rename?: boolean} | null;
 }
 
+
+
+
+// ** InitialState
+const storedTree = localStorage.getItem('fileTree');
 const initialState: FileTreeState = {
-    tree: fileTreeData,
-    newNode: null
+    tree: storedTree ? JSON.parse(storedTree) : fileTreeData,
+    newNode: null,
+};
+
+
+
+// ** Handlers
+const saveTreeToLocalStorageHandler = (tree: IFileTree) => {
+    try {
+        localStorage.setItem('fileTree', JSON.stringify(tree));
+    } catch (error) {
+        console.error('Failed to save file tree to localStorage', error);
+    }
 };
 
 
@@ -43,6 +59,7 @@ export const fileTreeSlice = createSlice({
                 parent.children = parent.children || [];
                 parent.children.push({ id, name, isFolder: false });
             }
+            saveTreeToLocalStorageHandler(state.tree);
         },
 
         addFolder: (state, action: PayloadAction<{ parentId: string, id:string, name: string }>) => {
@@ -66,6 +83,7 @@ export const fileTreeSlice = createSlice({
                 parent.children = parent.children || [];
                 parent.children.push({ id, name, isFolder: true, children: [] });
             }
+            saveTreeToLocalStorageHandler(state.tree);
         },
 
         renameNode: (state, action: PayloadAction<{ id: string, newName: string }>) => {
@@ -85,7 +103,9 @@ export const fileTreeSlice = createSlice({
                 node.name = action.payload.newName;
             }
             if (node && action.payload.newName !== '') node.name = action.payload.newName;
+            saveTreeToLocalStorageHandler(state.tree);
         },
+
         deleteNode: (state, action: PayloadAction<{ id: string }>) => {
             const deleteRecursively = (nodes: IFileTree[]): IFileTree[] => {
                 return nodes.filter(n => n.id !== action.payload.id).map(n => ({
@@ -94,14 +114,39 @@ export const fileTreeSlice = createSlice({
                 }));
             }
             state.tree.children  = deleteRecursively(state.tree.children ?? []);
+            saveTreeToLocalStorageHandler(state.tree);
         },
         setNewNode: (state, action: PayloadAction<{parentId: string, isFolder: boolean, rename: boolean} | null>)=> {
             state.newNode = action.payload;
-        }
+        },
+        updateFileContent: (state, action: PayloadAction<{ id: string; content: string }>) => {
+            const findNode = (nodes: IFileTree[]): IFileTree | null => {
+                for (const node of nodes) {
+                    if (node.id === action.payload.id) return node;
+                    if (node.children) {
+                        const found = findNode(node.children);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            };
+
+            
+            if (state.tree.id === action.payload.id && !state.tree.isFolder) {
+                state.tree.content = action.payload.content;
+                return;
+            }
+
+            const node = findNode(state.tree.children ?? []);
+            if (node && !node.isFolder) {
+                node.content = action.payload.content;
+            }
+            saveTreeToLocalStorageHandler(state.tree);
+        },
     },
 })
 
-export const { addFile, addFolder, renameNode, deleteNode, setNewNode } = fileTreeSlice.actions;
+export const { addFile, addFolder, renameNode, deleteNode, setNewNode, updateFileContent } = fileTreeSlice.actions;
 
 
 
