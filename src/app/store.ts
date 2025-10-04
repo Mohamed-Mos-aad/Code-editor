@@ -1,11 +1,19 @@
+// ** Hooks && Tools
 import { configureStore } from '@reduxjs/toolkit'
+// ** Slices
 import { tabsSlice } from './features/tabs/tabsSlice'
+import { contextMenuSlice } from './features/contextMenu/contextMenuSlice'
+
+
 
 export const store = configureStore({
     reducer: {
-        tabsSlice: tabsSlice.reducer
+        tabsSlice: tabsSlice.reducer,
+        contextMenuSlice: contextMenuSlice.reducer,
     },
 })
+
+
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

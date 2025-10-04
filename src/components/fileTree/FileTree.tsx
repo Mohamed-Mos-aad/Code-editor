@@ -5,10 +5,11 @@ import FileComponent from "./FileComponent";
 import Folder from "./Folder";
 // ** Interfaces
 import { fileTreeData } from "../../data/data";
+import type { IFileTree } from "../../interfaces";
 // ** Store
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addTab, setActiveTab } from "../../app/features/tabs/tabsSlice";
-import type { IFileTree } from "../../interfaces";
+import { updateContextMenu } from "../../app/features/contextMenu/contextMenuSlice";
 
 
 
@@ -40,16 +41,23 @@ export default function FileTree() {
         if(isExited) return 
         dispatch(addTab(file));
     }
+    const rightClickHandler = (e: React.MouseEvent, file: IFileTree) => {
+        e.preventDefault();
+        dispatch(updateContextMenu({ visible: true, x: e.pageX, y: e.pageY, file }));
+        console.log(e.pageX, e.pageY)
+        setActiveNode(file.id);
+    };
 
 
 
     // ** Render
     const fileTreeRender = fileTreeData?.map(item => 
         item.isFolder ?  
-        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
+        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler}/> 
         :
-        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/>
+        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler}/> 
     )
+
 
 
 

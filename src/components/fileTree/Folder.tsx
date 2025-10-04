@@ -8,11 +8,12 @@ import type { IFileTree } from "../../interfaces";
 interface IFolderProps {
     activeNode: string;
     changeActiveNodeHandler: (item:IFileTree)=> void;
+    onRightClick: (e: React.MouseEvent, file: IFileTree)=> void;
     file: IFileTree;
 }
 
 
-export default function Folder({file, activeNode, changeActiveNodeHandler}:IFolderProps) {
+export default function Folder({file, activeNode, changeActiveNodeHandler, onRightClick}:IFolderProps) {
     // ** States
     const [isOpen,setIsOpen] = useState<boolean>(false);
     const { id, name, isFolder } = file;
@@ -28,9 +29,9 @@ export default function Folder({file, activeNode, changeActiveNodeHandler}:IFold
     // ** Render
     const fileTreeRender = file.children?.map(item => 
         item.isFolder ?  
-        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/> 
+        <Folder file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={onRightClick}/> 
         :
-        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler}/>
+        <FileComponent file={item} key={item.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={onRightClick}/> 
     )
 
 
@@ -41,7 +42,8 @@ export default function Folder({file, activeNode, changeActiveNodeHandler}:IFold
                 <div className={ `${activeNode === id ? 'bg-[rgba(18,58,94)]' : ''} flex items-center gap-1 border-1 ${activeNode === id ? 'border-[#2E81D4]' : 'border-transparent'} rounded-[2px]`} onClick={() => {
                     toggleFolderState();
                     changeActiveNodeHandler(file);
-                }}>
+                }}
+                onContextMenu={(e)=>{onRightClick(e,file)}}>
                     {
                         isOpen ? 
                             <button>

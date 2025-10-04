@@ -6,6 +6,7 @@ import { useState } from 'react'
 import SideBar from './components/sideBar/SideBar'
 import FileTree from './components/fileTree/FileTree'
 import CodePage from './components/codePage/CodePage'
+import ContextMenu from './components/contectMenu/ContextMenu'
 // ** Store
 import { useAppSelector } from './app/hooks'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
@@ -15,6 +16,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 function App() {
   // ** Store
   const { activeTab } = useAppSelector((state) => state.tabsSlice)
+  const { visible } = useAppSelector((state) => state.contextMenuSlice)
   
 
 
@@ -33,6 +35,9 @@ function App() {
   return (
     <>
       <main className="w-full h-screen flex bg-[#1E1E1E] text-white">
+        {
+            visible && <ContextMenu />
+        }
         <SideBar fileStateToggleHandler={fileStateToggleHandler}/>
         <PanelGroup direction="horizontal" onLayout={setSizes}>
           { fileTreeIsOpen &&  

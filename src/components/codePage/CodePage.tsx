@@ -3,24 +3,13 @@ import {  useEffect, useRef, useState } from "react";
 import Prism from "prismjs";
 import "prism-themes/themes/prism-one-dark.css";
 import "prismjs/components/";
-function loadLanguage(name: string) {
-    const fileName = name;
-    const parts = fileName?.split(".");
-    let keyToSearch: string;
-
-    if (parts.length > 1) {
-        keyToSearch = parts[parts.length - 1].toLocaleLowerCase();
-    } else {
-        keyToSearch = fileName.toLocaleLowerCase();
-    }
-    const langFromMap = languagesMap[keyToSearch];
-    return (langFromMap || 'text').toLowerCase();
-}
 // ** Components
 import Tabs from "../tabs/Tabs";
 // ** Store
 import { useAppSelector } from "../../app/hooks";
+// ** Data
 import { languagesMap } from "../../constant";
+
 
 
 export default function CodePage() {
@@ -45,10 +34,23 @@ export default function CodePage() {
 
 
     // ** Handlers
+    const loadLanguageHandler = (name: string) => {
+        const fileName = name;
+        const parts = fileName?.split(".");
+        let keyToSearch: string;
+
+        if (parts.length > 1) {
+            keyToSearch = parts[parts.length - 1].toLocaleLowerCase();
+        } else {
+            keyToSearch = fileName.toLocaleLowerCase();
+        }
+        const langFromMap = languagesMap[keyToSearch];
+        return (langFromMap || 'text').toLowerCase();
+    }
     const changeCodeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>)=>{
         const newCode = e.currentTarget.value;
         setCode(newCode);
-        const lang = loadLanguage(activeTab?.name || "");
+        const lang = loadLanguageHandler(activeTab?.name || "");
         const grammar = Prism.languages[lang] || Prism.languages.javascript;
         const html = Prism.highlight(
             newCode,
@@ -65,15 +67,16 @@ export default function CodePage() {
     };
 
 
+
     // ** UseEffect
     useEffect(() => {
-    if (activeTab) {
-        const lang = loadLanguage(activeTab?.name || "");
-        const newCode = activeTab.content || "";
-        const grammar = Prism.languages[lang] || Prism.languages.javascript;
-        setCode(newCode);
-        setHighlightedCode(Prism.highlight(newCode, grammar, lang));
-    }
+        if (activeTab) {
+            const lang = loadLanguageHandler(activeTab?.name || "");
+            const newCode = activeTab.content || "";
+            const grammar = Prism.languages[lang] || Prism.languages.javascript;
+            setCode(newCode);
+            setHighlightedCode(Prism.highlight(newCode, grammar, lang));
+        }
     }, [activeTab]);
 
 

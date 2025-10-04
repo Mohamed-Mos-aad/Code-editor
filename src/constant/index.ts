@@ -1,3 +1,4 @@
+// ** Logos Map
 export const logoMap: Record<string, string> = {
   // ----------------------------------------------------------------------
   // 1. Files based on file extension (e.g., "js": "javascript")
@@ -1037,6 +1038,7 @@ export const logoMap: Record<string, string> = {
 
 
 
+// ** Languages Map
 export const languagesMap: Record<string, string> = {
     markup: "Markup",
     html: "Markup",
