@@ -9,7 +9,7 @@ interface IFileLogo{
 }
 
 
-const DEFAULT_ICON = 'file'; 
+const DEFAULT_ICON = 'document'; 
 const DEFAULT_FOLDER_ICON = 'folder-default';
 const DEFAULT_FOLDER_OPEN_ICON = 'folder-default-open';
 

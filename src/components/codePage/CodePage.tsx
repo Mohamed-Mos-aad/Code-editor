@@ -6,9 +6,15 @@ import "prismjs/components/";
 function loadLanguage(name: string) {
     const fileName = name;
     const parts = fileName?.split(".");
-    const extension = parts[parts.length - 1].toLocaleLowerCase();
-    const lang = languagesMap[extension].toLowerCase();
-    return lang;
+    let keyToSearch: string;
+
+    if (parts.length > 1) {
+        keyToSearch = parts[parts.length - 1].toLocaleLowerCase();
+    } else {
+        keyToSearch = fileName.toLocaleLowerCase();
+    }
+    const langFromMap = languagesMap[keyToSearch];
+    return (langFromMap || 'text').toLowerCase();
 }
 // ** Components
 import Tabs from "../tabs/Tabs";
