@@ -18,7 +18,7 @@ import { setNewNode } from "../../app/features/filesTree/fileTreeSlice";
 
 export default function FileTree() {
     // ** Store
-    const { tabs } = useAppSelector((state) => state.tabsSlice)
+    const { tabs, activeTab } = useAppSelector((state) => state.tabsSlice)
     const { tree } = useAppSelector((state) => state.fileTreeSlice)
     const { newNode } = useAppSelector((state) => state.fileTreeSlice)
     const dispatch = useAppDispatch()
@@ -67,11 +67,11 @@ export default function FileTree() {
 
         return node.isFolder
             ? (isNodeRenaming
-                ? <RenameNode node={node} changeActiveNodeHandler={changeActiveNodeHandler} />
-                : <Folder file={node} key={node.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler} />)
+                ? <RenameNode node={node} key={node.id} changeActiveNodeHandler={changeActiveNodeHandler} />
+                : <Folder file={node} key={node.id} activeNode={activeTab?.id ?? ''} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler} />)
             : (isNodeRenaming
-                ? <RenameNode node={node} changeActiveNodeHandler={changeActiveNodeHandler} />
-                : <FileComponent file={node} key={node.id} activeNode={activeNode} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler} />);
+                ? <RenameNode node={node} key={node.id} changeActiveNodeHandler={changeActiveNodeHandler} />
+                : <FileComponent file={node} key={node.id} activeNode={activeTab?.id ?? ''} changeActiveNodeHandler={changeActiveNodeHandler} onRightClick={rightClickHandler} />);
     });
 
 
