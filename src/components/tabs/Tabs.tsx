@@ -7,6 +7,7 @@ import type { IFileTree } from "../../interfaces";
 // ** Store
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { closeTab, setActiveTab } from "../../app/features/tabs/tabsSlice";
+import { updateContextMenu } from "../../app/features/contextMenu/contextMenuSlice";
 
 
 
@@ -25,12 +26,16 @@ export default function Tabs() {
     const closeTabHandler = (id:string)=>{
         dispatch(closeTab(id));
     }
+    const rightClickHandler = (e: React.MouseEvent, file: IFileTree) => {
+        e.preventDefault();
+        dispatch(updateContextMenu({ visible: true, x: e.pageX, y: e.pageY, file , type: "tab"}));
+    };
 
 
 
     // ** Render
     const tabRenders = tabs.map(tab => 
-        <li className={`mini-w-40 flex justify-between items-center gap-1 ${activeTab?.id === tab.id ? 'bg-[#1E1E1E]' :  'bg-[#2D2D2D]'}  px-4 py-2 cursor-pointer group`} onClick={()=>{selectActiveTabHandler(tab)}} key={tab.id}>
+        <li className={`mini-w-40 flex justify-between items-center gap-1 ${activeTab?.id === tab.id ? 'bg-[#1E1E1E]' :  'bg-[#2D2D2D]'}  px-4 py-2 cursor-pointer group`} onClick={()=>{selectActiveTabHandler(tab)}} key={tab.id} onContextMenu={(e)=>{rightClickHandler(e,tab)}}>
             <div className="max-w-4">
                 <FileLogo isFolder={false} name={tab.name}/>
             </div>

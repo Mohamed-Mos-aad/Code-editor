@@ -30,8 +30,10 @@ export default function FileLogo({isFolder,isOpen,name}:IFileLogo) {
         keyToSearch = extension;
     }
 
+
+    
     const iconValue = logoMap[keyToSearch] || (isFolder ? (isOpen ? DEFAULT_FOLDER_OPEN_ICON : DEFAULT_FOLDER_ICON) : DEFAULT_ICON);
-    const logoIconUrl = `/icons/${iconValue}.svg`;
+    const logoIconUrl = `${import.meta.env.BASE_URL}icons/${iconValue}.svg`;
 
 
 

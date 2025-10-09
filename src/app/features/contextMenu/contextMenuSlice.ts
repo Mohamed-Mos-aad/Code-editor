@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 // ** Interfaces
 import type { IFileTree } from '../../../interfaces'
 interface IContextMenuState {
-    visible: boolean, x: number, y: number, file: IFileTree | null
+    visible: boolean, x: number, y: number, file: IFileTree | null, type: 'tab' | 'fileTree' | null;
 }
 
 
@@ -14,7 +14,8 @@ const initialState: IContextMenuState = {
     visible: false,
     x: 0,
     y: 0,
-    file: null
+    file: null,
+    type: null,
 }
 
 export const contextMenuSlice = createSlice({
@@ -27,6 +28,7 @@ export const contextMenuSlice = createSlice({
             state.x = action.payload.x;
             state.y = action.payload.y;
             state.file = action.payload.file;
+            state.type = action.payload.type
         },
         closeContextMenu: (state) => {
             state.visible = false;

@@ -48,7 +48,7 @@ export default function FileTree() {
     }
     const rightClickHandler = (e: React.MouseEvent, file: IFileTree) => {
         e.preventDefault();
-        dispatch(updateContextMenu({ visible: true, x: e.pageX, y: e.pageY, file }));
+        dispatch(updateContextMenu({ visible: true, x: e.pageX, y: e.pageY, file, type: "fileTree" }));
         setActiveNode(file.id);
     };
     const addFileHandler = ()=>{

@@ -71,10 +71,13 @@ export const tabsSlice = createSlice({
             saveTabsToLocalStorageHandler(state.tabs);
             saveActiveTabToLocalStorageHandler(state.activeTab);
         },
+        closeAllTabs: (state)=>{
+            state.tabs = []
+        }
     },
 })
 
-export const { addTab , setActiveTab, closeTab } = tabsSlice.actions
+export const { addTab , setActiveTab, closeTab, closeAllTabs } = tabsSlice.actions
 
 
 export default tabsSlice.reducer
