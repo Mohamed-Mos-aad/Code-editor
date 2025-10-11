@@ -1,7 +1,7 @@
 // ** Style
 import './App.css'
 // ** Hooks && Tools
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // ** Components
 import SideBar from './components/sideBar/SideBar'
 import FileTree from './components/fileTree/FileTree'
@@ -10,6 +10,9 @@ import ContextMenu from './components/contectMenu/ContextMenu'
 // ** Store
 import { useAppSelector } from './app/hooks'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
+import Search from './components/search/Search'
+// ** Local Storage
+import { loadAppData, saveAppData } from './utils/localStorageHelper'
 
 
 
@@ -20,16 +23,47 @@ function App() {
   
 
 
+  // ** Local Storage
+  const { panelsSizes } = loadAppData()
+
+
   // ** States
-  const [fileTreeIsOpen,setFileTreeIsOpen] = useState<boolean>(true);
-  const [sizes, setSizes] = useState([20, 80]);
+  const [sideSectionIsOpen,setSideSectionIsOpen] = useState<boolean>(true);
+  const [sizes, setSizes] = useState(panelsSizes ? [...panelsSizes] : [20,80]);
+  const [sideSection, setSideSection] = useState(<FileTree />);
+  const [lastSection, setLastSection] = useState<string>('fileTree');
 
 
+  
   // ** Handler
-  const fileStateToggleHandler = ()=>{
-    setFileTreeIsOpen(prev => !prev)
+  const sideSectionStateToggleHandler = (currentSection: string)=>{
+    if(currentSection === lastSection)
+    {
+      setSideSectionIsOpen(prev => !prev)
+    }
+  }
+  const openFileTreeSideSectionHandler = ()=>{
+    sideSectionStateToggleHandler('fileTree');
+    setLastSection('fileTree')
+    setSideSection(<FileTree />)
+  }
+  const openSearchSideSectionHandler = ()=>{
+    sideSectionStateToggleHandler('search');
+    setLastSection('search')
+    setSideSection(<Search />)
   }
 
+
+  
+  // ** UseEffect
+  useEffect(()=>{
+    if(sideSectionIsOpen){
+      setSizes([20,80])
+    }
+  },[sideSectionIsOpen])
+  useEffect(() => {
+    saveAppData({ panelsSizes: sizes });
+  }, [sizes]);
 
   
   return (
@@ -39,15 +73,19 @@ function App() {
           {
             visible && <ContextMenu />
           }
-          <SideBar fileStateToggleHandler={fileStateToggleHandler}/>
-          <PanelGroup direction="horizontal" onLayout={setSizes} className="h-full">
-            { fileTreeIsOpen &&  
-              <Panel defaultSize={sizes[0]} minSize={20}>
-                <FileTree />
-              </Panel>          
+          <SideBar openFileTreeSideSectionHandler={openFileTreeSideSectionHandler} openSearchSideSectionHandler={openSearchSideSectionHandler}/>
+          <PanelGroup direction="horizontal" autoSaveId="conditional" onLayout={(newSizes) => setSizes(newSizes)} className="h-full">
+            { sideSectionIsOpen &&  
+              (
+                <>
+                  <Panel defaultSize={sizes[0]} minSize={20} order={1}>
+                    {sideSection}
+                  </Panel>          
+                  <PanelResizeHandle />
+                </>
+              )
             }
-            <PanelResizeHandle />
-            <Panel defaultSize={fileTreeIsOpen ? sizes[1] : 100} minSize={30}>
+            <Panel defaultSize={sideSectionIsOpen ? sizes[1] : 100} minSize={30} order={2}>
             {activeTab ? 
               <CodePage />
               :

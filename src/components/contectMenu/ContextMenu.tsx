@@ -48,7 +48,6 @@ export default function ContextMenu() {
         dispatch(closeTab(file.id));
     }
     const closeAllTabsHandler = ()=>{
-        if(!file) return
         dispatch(closeContextMenu());
         dispatch(closeAllTabs());
     }

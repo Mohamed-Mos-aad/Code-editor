@@ -1,6 +1,8 @@
 // ** Hooks && Tools
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+// ** Local Storage
+import { loadAppData, saveAppData } from '../../../utils/localStorageHelper';
 // ** Interfaces
 import type { IFileTree } from '../../../interfaces'
 interface TabsState {
@@ -11,31 +13,12 @@ interface TabsState {
 
 
 
-const storedActiveTab = localStorage.getItem('activeTab');
-const storedTabs = localStorage.getItem('tabs');
+const storedData = loadAppData();
 const initialState: TabsState = {
-    activeTab: storedActiveTab ? JSON.parse(storedActiveTab) : null,
-    tabs: storedTabs ? JSON.parse(storedTabs) : [],
+    tabs: storedData.tabs,
+    activeTab: storedData.activeTab,
 };
 
-
-
-
-// ** Handlers
-const saveActiveTabToLocalStorageHandler = (activeTab: IFileTree | null) => {
-    try {
-        if(activeTab) localStorage.setItem('activeTab', JSON.stringify(activeTab));
-    } catch (error) {
-        console.error('Failed to save activeTab to localStorage', error);
-    }
-};
-const saveTabsToLocalStorageHandler = (tabs: IFileTree[] | null) => {
-    try {
-        if(tabs) localStorage.setItem('tabs', JSON.stringify(tabs));
-    } catch (error) {
-        console.error('Failed to save activeTab to localStorage', error);
-    }
-};
 
 
 export const tabsSlice = createSlice({
@@ -47,12 +30,12 @@ export const tabsSlice = createSlice({
             const exists = state.tabs.find(t => t.id === action.payload.id);
             if (!exists) {
                 state.tabs.push(action.payload);
-                saveTabsToLocalStorageHandler(state.tabs);
+                saveAppData({ tabs: state.tabs });
             }
         },
         setActiveTab: (state, action: PayloadAction<IFileTree | null>) => {
             state.activeTab = action.payload;
-            saveActiveTabToLocalStorageHandler(action.payload);
+            saveAppData({ activeTab: state.activeTab });
         },
         closeTab: (state, action: PayloadAction<string>) => {
             const closingId = action.payload;
@@ -68,8 +51,7 @@ export const tabsSlice = createSlice({
             };
 
             state.tabs = updatedTabs;
-            saveTabsToLocalStorageHandler(state.tabs);
-            saveActiveTabToLocalStorageHandler(state.activeTab);
+            saveAppData({ tabs: state.tabs, activeTab: state.activeTab });
         },
         closeAllTabs: (state)=>{
             state.tabs = []

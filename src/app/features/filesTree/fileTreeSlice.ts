@@ -1,11 +1,10 @@
 // ** Hooks && Tools
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-// ** Data
-import { fileTreeData } from '../../../data/data';
+// ** Local Storage
+import { loadAppData, saveAppData } from '../../../utils/localStorageHelper';
 // ** Interfaces
 import type { IFileTree } from '../../../interfaces';
-
 interface FileTreeState {
     tree: IFileTree;
     newNode: {parentId: string, isFolder: boolean, rename?: boolean} | null;
@@ -15,21 +14,10 @@ interface FileTreeState {
 
 
 // ** InitialState
-const storedTree = localStorage.getItem('fileTree');
+const storedTree = loadAppData();
 const initialState: FileTreeState = {
-    tree: storedTree ? JSON.parse(storedTree) : fileTreeData,
+    tree: storedTree.fileTree,
     newNode: null,
-};
-
-
-
-// ** Handlers
-const saveTreeToLocalStorageHandler = (tree: IFileTree) => {
-    try {
-        localStorage.setItem('fileTree', JSON.stringify(tree));
-    } catch (error) {
-        console.error('Failed to save file tree to localStorage', error);
-    }
 };
 
 
@@ -59,7 +47,7 @@ export const fileTreeSlice = createSlice({
                 parent.children = parent.children || [];
                 parent.children.push({ id, name, isFolder: false });
             }
-            saveTreeToLocalStorageHandler(state.tree);
+            saveAppData({ fileTree: state.tree });
         },
 
         addFolder: (state, action: PayloadAction<{ parentId: string, id:string, name: string }>) => {
@@ -83,7 +71,7 @@ export const fileTreeSlice = createSlice({
                 parent.children = parent.children || [];
                 parent.children.push({ id, name, isFolder: true, children: [] });
             }
-            saveTreeToLocalStorageHandler(state.tree);
+            saveAppData({ fileTree: state.tree });
         },
 
         renameNode: (state, action: PayloadAction<{ id: string, newName: string }>) => {
@@ -103,7 +91,7 @@ export const fileTreeSlice = createSlice({
                 node.name = action.payload.newName;
             }
             if (node && action.payload.newName !== '') node.name = action.payload.newName;
-            saveTreeToLocalStorageHandler(state.tree);
+            saveAppData({ fileTree: state.tree });
         },
 
         deleteNode: (state, action: PayloadAction<{ id: string }>) => {
@@ -114,7 +102,7 @@ export const fileTreeSlice = createSlice({
                 }));
             }
             state.tree.children  = deleteRecursively(state.tree.children ?? []);
-            saveTreeToLocalStorageHandler(state.tree);
+            saveAppData({ fileTree: state.tree });
         },
         setNewNode: (state, action: PayloadAction<{parentId: string, isFolder: boolean, rename: boolean} | null>)=> {
             state.newNode = action.payload;
@@ -141,7 +129,7 @@ export const fileTreeSlice = createSlice({
             if (node && !node.isFolder) {
                 node.content = action.payload.content;
             }
-            saveTreeToLocalStorageHandler(state.tree);
+            saveAppData({ fileTree: state.tree });
         },
     },
 })
