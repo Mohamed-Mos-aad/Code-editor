@@ -7,6 +7,7 @@ import SideBar from './components/sideBar/SideBar'
 import FileTree from './components/fileTree/FileTree'
 import CodePage from './components/codePage/CodePage'
 import ContextMenu from './components/contectMenu/ContextMenu'
+import Header from './components/header/Header'
 // ** Store
 import { useAppSelector } from './app/hooks'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
@@ -70,6 +71,7 @@ function App() {
   return (
     <>
       <main className="w-full h-screen flex flex-col bg-[#1E1E1E] text-white">
+        <Header />
         <div className='w-full flex-1 flex'>
           {
             visible && <ContextMenu />

@@ -4,6 +4,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { tabsSlice } from './features/tabs/tabsSlice'
 import { contextMenuSlice } from './features/contextMenu/contextMenuSlice'
 import { fileTreeSlice } from './features/filesTree/fileTreeSlice'
+import { themeSlice } from './features/settings/settingsSlice'
 
 
 
@@ -12,6 +13,7 @@ export const store = configureStore({
         tabsSlice: tabsSlice.reducer,
         contextMenuSlice: contextMenuSlice.reducer,
         fileTreeSlice: fileTreeSlice.reducer,
+        themeSlice: themeSlice.reducer,
     },
 })
 

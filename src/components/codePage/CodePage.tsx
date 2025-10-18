@@ -1,7 +1,8 @@
 // ** Hooks && Tools
 import {  useEffect, useRef, useState } from "react";
 import Prism from "prismjs";
-import "prism-themes/themes/prism-one-dark.css";
+import "prismjs/plugins/line-numbers/prism-line-numbers.css";
+import "prismjs/plugins/line-numbers/prism-line-numbers.js";
 import "prismjs/components/";
 // ** Components
 import Tabs from "../tabs/Tabs";
@@ -17,6 +18,7 @@ import { setActiveTab } from "../../app/features/tabs/tabsSlice";
 export default function CodePage() {
     // ** Store
     const { activeTab } = useAppSelector((state) => state.tabsSlice)
+    const { theme } = useAppSelector((state) => state.themeSlice)
     const dispatch = useAppDispatch()
     
 
@@ -24,7 +26,7 @@ export default function CodePage() {
     // ** States
     const [code, setCode] = useState(activeTab?.content || "");
     const [highlightedCode, setHighlightedCode] = useState("");
-    
+
 
 
 
@@ -155,6 +157,22 @@ export default function CodePage() {
             setHighlightedCode(Prism.highlight(newCode, grammar, lang));
         }
     }, [activeTab]);
+    useEffect(() => {
+        const linkId = "prism-theme-link";
+        let linkTag = document.getElementById(linkId) as HTMLLinkElement | null;
+
+        if (!linkTag) {
+            linkTag = document.createElement("link");
+            linkTag.id = linkId;
+            linkTag.rel = "stylesheet";
+            document.head.appendChild(linkTag);
+        }
+
+        linkTag.href = `https://cdn.jsdelivr.net/npm/prism-themes/themes/${theme}.css`;
+    }, [theme]);
+
+
+
 
     return (
         <>
@@ -163,14 +181,19 @@ export default function CodePage() {
                 <section className="relative bg-[#1E1E1E]">
                     <textarea ref={textareaRef}
                             onScroll={handleScroll}
-                            className="w-full h-[92vh] absolute top-0 left-0 text-transparent caret-white whitespace-pre resize-none focus:outline-0 selection:bg-blue-600 selection:text-white
+                            className="w-full h-[86vh] absolute top-0 left-0 text-transparent caret-white whitespace-pre resize-none focus:outline-0 selection:bg-blue-600 selection:text-white
                             bg-transparent outline-none z-10 font-mono text-[16px] leading-6 overflow-x-auto custom-scrollbar" 
                             spellCheck={false}
                             onChange={(e)=>{changeCodeHandler(e)}} 
                             onKeyDown={(e)=>{keyDownHandler(e)}}
                             value={code || ""}>
                     </textarea>
-                    <pre ref={preRef} className="w-full h-[92vh] overflow-auto text-[16px] leading-6 font-mono text-white whitespace-pre overflow-x-auto custom-scrollbar" dangerouslySetInnerHTML={{ __html: highlightedCode }}/>
+                    {/* <div className="bg-[#2E2E2E] text-gray-400 px-2 text-right select-none">
+                        {code.split("\n").map((_, i) => (
+                        <div key={i}>{i + 1}</div>
+                        ))}
+                    </div> */}
+                    <pre ref={preRef} className="w-full h-[86vh] overflow-auto text-[16px] leading-6 font-mono text-white whitespace-pre overflow-x-auto custom-scrollbar" dangerouslySetInnerHTML={{ __html: highlightedCode }}/>
                 </section>
             </div>
         </>
