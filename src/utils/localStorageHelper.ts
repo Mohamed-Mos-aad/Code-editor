@@ -1,3 +1,8 @@
+// ** Data
+import { fileTreeData } from "../data/data";
+
+
+
 // ** Constant
 const STORAGE_KEY = "vsCode_clone";
 
@@ -5,7 +10,7 @@ const STORAGE_KEY = "vsCode_clone";
 
 // ** Default
 const defaultData = {
-    fileTree: {},
+    fileTree: fileTreeData,
     tabs: [],
     activeTab: null,
     panelsSizes: [20,80],

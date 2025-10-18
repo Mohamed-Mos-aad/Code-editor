@@ -3,8 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 // ** Local Storage
 import { loadAppData, saveAppData } from '../../../utils/localStorageHelper';
-// ** Data
-import { fileTreeData } from '../../../data/data';
 // ** Interfaces
 import type { IFileTree } from '../../../interfaces';
 interface FileTreeState {
@@ -18,7 +16,7 @@ interface FileTreeState {
 // ** InitialState
 const storedTree = loadAppData();
 const initialState: FileTreeState = {
-    tree: storedTree.fileTree ?? fileTreeData,
+    tree: storedTree.fileTree,
     newNode: null,
 };
 
