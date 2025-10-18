@@ -1,5 +1,5 @@
 // ** Hooks && Tools
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // ** Components
 import FileComponent from "./FileComponent";
 import Folder from "./Folder";
@@ -11,7 +11,8 @@ import type { IFileTree } from "../../interfaces";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addTab, setActiveTab } from "../../app/features/tabs/tabsSlice";
 import { closeContextMenu, updateContextMenu } from "../../app/features/contextMenu/contextMenuSlice";
-import { setNewNode } from "../../app/features/filesTree/fileTreeSlice";
+import { setInitialTree, setNewNode } from "../../app/features/filesTree/fileTreeSlice";
+import { loadAppData } from "../../utils/localStorageHelper";
 
 
 
@@ -59,6 +60,17 @@ export default function FileTree() {
         dispatch(closeContextMenu());
         dispatch(setNewNode({ parentId: 'main', isFolder: true, rename: false }));
     }
+
+
+
+    // ** UseEffect
+    useEffect(() => {
+        const data = loadAppData();
+        if (data?.fileTree) {
+            dispatch(setInitialTree(data.fileTree));
+        }
+    }, [dispatch]);
+
 
 
     // ** Render

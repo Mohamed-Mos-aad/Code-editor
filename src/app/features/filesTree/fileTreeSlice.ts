@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 // ** Local Storage
-import { loadAppData, saveAppData } from '../../../utils/localStorageHelper';
+import { saveAppData } from '../../../utils/localStorageHelper';
 // ** Interfaces
 import type { IFileTree } from '../../../interfaces';
 interface FileTreeState {
@@ -14,9 +14,13 @@ interface FileTreeState {
 
 
 // ** InitialState
-const storedTree = loadAppData();
 const initialState: FileTreeState = {
-    tree: storedTree.fileTree,
+    tree: {
+        id: "main",
+        name: "root",
+        isFolder: true,
+        children: [],
+    },
     newNode: null,
 };
 
@@ -131,10 +135,13 @@ export const fileTreeSlice = createSlice({
             }
             saveAppData({ fileTree: state.tree });
         },
+        setInitialTree: (state, action: PayloadAction<IFileTree>) => {
+            state.tree = action.payload;
+        }
     },
 })
 
-export const { addFile, addFolder, renameNode, deleteNode, setNewNode, updateFileContent } = fileTreeSlice.actions;
+export const { addFile, addFolder, renameNode, deleteNode, setNewNode, updateFileContent, setInitialTree } = fileTreeSlice.actions;
 
 
 
