@@ -24,6 +24,14 @@ export const loadAppData = () => {
         const data = localStorage.getItem(STORAGE_KEY);
         const parsed = data ? JSON.parse(data) : defaultData;
 
+        if (
+            !parsed.fileTree ||
+            Object.keys(parsed.fileTree).length === 0 ||
+            !parsed.fileTree.children
+        ) {
+            return defaultData;
+        }
+        
         return { ...defaultData, ...parsed };
     } catch (error) {
         console.error("Failed to load app data", error);
